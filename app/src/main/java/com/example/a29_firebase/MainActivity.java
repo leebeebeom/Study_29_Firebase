@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         TextView text;
         CircleImageView profilePhoto;
         ImageView image;
+        CircleImageView profilePhoto_My;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             text = itemView.findViewById(R.id.message_text);
             profilePhoto = itemView.findViewById(R.id.message_profile_photo);
             image = itemView.findViewById(R.id.message_image);
+            profilePhoto_My = itemView.findViewById(R.id.message_profile_photo_my);
 
         }
     }
@@ -121,14 +124,35 @@ public class MainActivity extends AppCompatActivity {
 
                 holder.text.setText(model.getText());
                 holder.name.setText(model.getName());
-                if (model.getProfilePhotoUrl() == null) {
-                    //벡터 이미지는 그냥 안들어감
-                    Drawable drawable = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_baseline_account_circle_24);
-                    holder.profilePhoto.setImageDrawable(drawable);
-                } else {
-                    Glide.with(MainActivity.this)
-                            .load(model.getProfilePhotoUrl())
-                            .into(holder.profilePhoto);
+                //내 메세지일 경우
+                if (mUserEmail.equals(model.getEmail())) {
+                    //오른쪽 정렬
+                    holder.name.setGravity(Gravity.END);
+                    holder.text.setGravity(Gravity.END);
+                    //왼쪽 프사 GONE
+                    holder.profilePhoto.setVisibility(View.GONE);
+                    //오른쪽 프사 VISIBLE
+                    holder.profilePhoto_My.setVisibility(View.VISIBLE);
+                    //프사가 없을 경우
+                    if (model.getProfilePhotoUrl() == null) {
+                        //기본 이미지
+                        Drawable drawable = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_baseline_account_circle_24);
+                        holder.profilePhoto_My.setImageDrawable(drawable);
+                    } else {//프사가 있을 경우
+                        Glide.with(MainActivity.this)
+                                .load(model.getProfilePhotoUrl())
+                                .into(holder.profilePhoto_My);
+                    }
+                } else {//상대방 메세지일 경우
+                    if (model.getProfilePhotoUrl() == null) {
+                        //벡터 이미지는 그냥 안들어감
+                        Drawable drawable = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_baseline_account_circle_24);
+                        holder.profilePhoto.setImageDrawable(drawable);
+                    } else {
+                        Glide.with(MainActivity.this)
+                                .load(model.getProfilePhotoUrl())
+                                .into(holder.profilePhoto);
+                    }
                 }
             }
 
@@ -197,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         //패치앤액티베이트 후 FirebaseRemoteConfig에서 값을 가져올 수 있다
                         long messageLength = mFirebaseRemoteConfig.getLong("message_length");
-                        Log.d(TAG, "onCreate: "+messageLength);
+                        Log.d(TAG, "onCreate: " + messageLength);
                         mMessageEditText.setFilters(new InputFilter[]{
                                 new InputFilter.LengthFilter((int) messageLength)});
                     } else {
@@ -236,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, SigninActivity.class));
             finish();
             return true;
-        }else if(item.getItemId() == R.id.crash_mune){
+        } else if (item.getItemId() == R.id.crash_mune) {
             throw new RuntimeException("Test Crash");
         }
 

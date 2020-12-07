@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,12 +22,12 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/message_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
                 android:textStyle="bold"
@@ -41,11 +41,19 @@
 
             <TextView
                 android:id="@+id/message_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
                 tools:text="내용" />
         </LinearLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/message_profile_photo_my"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            tools:src="@drawable/ic_baseline_account_circle_24"
+            android:layout_margin="8dp"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </LinearLayout>
